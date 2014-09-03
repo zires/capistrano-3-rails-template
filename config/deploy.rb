@@ -42,31 +42,6 @@ set(:executable_config_files, %w(
   unicorn_init.sh
 ))
 
-
-# files which need to be symlinked to other parts of the
-# filesystem. For example nginx virtualhosts, log rotation
-# init scripts etc. The full_app_name variable isn't
-# available at this point so we use a custom template {{}}
-# tag and then add it at run time.
-set(:symlinks, [
-  {
-    source: "nginx.conf",
-    link: "/etc/nginx/sites-enabled/{{full_app_name}}"
-  },
-  {
-    source: "unicorn_init.sh",
-    link: "/etc/init.d/unicorn_{{full_app_name}}"
-  },
-  {
-    source: "log_rotation",
-   link: "/etc/logrotate.d/{{full_app_name}}"
-  },
-  {
-    source: "monit",
-    link: "/etc/monit/conf.d/{{full_app_name}}.conf"
-  }
-])
-
 # this:
 # http://www.capistranorb.com/documentation/getting-started/flow/
 # is worth reading for a quick overview of what tasks are called
@@ -83,7 +58,7 @@ namespace :deploy do
 
   # remove the default nginx configuration as it will tend
   # to conflict with our configs.
-  before 'deploy:setup_config', 'nginx:remove_default_vhost'
+  # before 'deploy:setup_config', 'nginx:remove_default_vhost'
 
   # reload nginx to it will pick up any modified vhosts from
   # setup_config
